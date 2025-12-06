@@ -1,0 +1,24 @@
+{
+  "name": "scdproject25",
+  "version": "1.0.0",
+  "description": "NodeVault CLI project for SCD Assignment",
+  "main": "main.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LaibaImran1500/SCDProject25.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LaibaImran1500/SCDProject25/issues"
+  },
+  "homepage": "https://github.com/LaibaImran1500/SCDProject25#readme"
+}

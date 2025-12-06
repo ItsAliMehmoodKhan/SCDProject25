@@ -14,13 +14,18 @@ function menu() {
 2. List Records
 3. Update Record
 4. Delete Record
-5. Exit
+5. Search Records
+6. Sort Records
+7. Export Data
+8. View Vault Statistics
+9. Exit
 =====================
   `);
 
   rl.question('Choose option: ', ans => {
     switch (ans.trim()) {
-      case '1':
+
+      case '1': // ADD
         rl.question('Enter name: ', name => {
           rl.question('Enter value: ', value => {
             db.addRecord({ name, value });
@@ -30,14 +35,16 @@ function menu() {
         });
         break;
 
-      case '2':
+      case '2': // LIST
         const records = db.listRecords();
         if (records.length === 0) console.log('No records found.');
-        else records.forEach(r => console.log(`ID: ${r.id} | Name: ${r.name} | Value: ${r.value}`));
+        else records.forEach(r =>
+          console.log(`ID: ${r.id} | Name: ${r.name} | Value: ${r.value} | Created: ${r.createdAt}`)
+        );
         menu();
         break;
 
-      case '3':
+      case '3': // UPDATE
         rl.question('Enter record ID to update: ', id => {
           rl.question('New name: ', name => {
             rl.question('New value: ', value => {
@@ -49,7 +56,7 @@ function menu() {
         });
         break;
 
-      case '4':
+      case '4': // DELETE
         rl.question('Enter record ID to delete: ', id => {
           const deleted = db.deleteRecord(Number(id));
           console.log(deleted ? '🗑️ Record deleted!' : '❌ Record not found.');
@@ -57,7 +64,53 @@ function menu() {
         });
         break;
 
-      case '5':
+      case '5': // SEARCH
+        rl.question('Enter search keyword: ', key => {
+          const results = db.searchRecords(key);
+          if (results.length === 0) console.log('No matching records.');
+          else {
+            console.log(`Found ${results.length} record(s):`);
+            results.forEach(r =>
+              console.log(`ID: ${r.id} | Name: ${r.name} | Value: ${r.value}`)
+            );
+          }
+          menu();
+        });
+        break;
+
+      case '6': // SORT
+        rl.question('Sort by (name/date): ', field => {
+          rl.question('Order (asc/desc): ', order => {
+            const sorted = db.sortRecords(field, order);
+            sorted.forEach(r =>
+              console.log(`ID: ${r.id} | Name: ${r.name} | Created: ${r.createdAt}`)
+            );
+            menu();
+          });
+        });
+        break;
+
+      case '7': // EXPORT
+        db.exportData();
+        console.log('📤 Data exported to export.txt');
+        menu();
+        break;
+
+      case '8': // STATS
+        const stats = db.getStatistics();
+        console.log(`
+Vault Statistics:
+-------------------------
+Total Records: ${stats.total}
+Last Modified: ${stats.lastModified}
+Longest Name: ${stats.longestName} (${stats.longestLen} chars)
+Earliest Record: ${stats.earliest}
+Latest Record: ${stats.latest}
+`);
+        menu();
+        break;
+
+      case '9':
         console.log('👋 Exiting NodeVault...');
         rl.close();
         break;

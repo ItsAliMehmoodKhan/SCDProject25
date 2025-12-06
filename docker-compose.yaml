@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:6.0
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_DATABASE=vaultdb
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - scd-net
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: alimehmoodkhan/scd-backend:2.0.0
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://mongo:27017/vaultdb
+    # Persist local JSON and backups into volumes so host can access them
+    volumes:
+      - data_volume:/app/data
+      - backups_volume:/app/backups
+      - export_volume:/app/export.txt
+    networks:
+      - scd-net
+    # If you later expose ports for a web server, map them here.
+    # ports:
+    #   - "3000:3000"
+
+volumes:
+  mongo_data:
+  data_volume:
+  backups_volume:
+  export_volume:
+
+networks:
+  scd-net:
+    driver: bridge
